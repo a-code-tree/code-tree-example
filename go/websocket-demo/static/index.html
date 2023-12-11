@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Demo</title>
+</head>
+<body>
+<h1>WebSocket Demo</h1>
+<div id="output"></div>
+<input type="text" id="message" placeholder="Enter a message">
+<button onclick="sendMessage()">Send</button>
+
+<script>
+    const socket = new WebSocket("ws://localhost:18082/ws");
+
+    socket.onopen = function(event) {
+        document.getElementById("output").innerHTML = "WebSocket opened";
+    };
+
+    socket.onmessage = function(event) {
+        document.getElementById("output").innerHTML = "Received message: " + event.data;
+    };
+
+    socket.onclose = function(event) {
+        if (event.wasClean) {
+            document.getElementById("output").innerHTML = "WebSocket closed cleanly, code=" + event.code;
+        } else {
+            document.getElementById("output").innerHTML = "WebSocket connection died";
+        }
+    };
+
+    socket.onerror = function(error) {
+        document.getElementById("output").innerHTML = "WebSocket error: " + error.message;
+    };
+
+    function sendMessage() {
+        const messageInput = document.getElementById("message");
+        const message = messageInput.value;
+        socket.send(message);
+        messageInput.value = "";
+    }
+</script>
+</body>
+</html>
